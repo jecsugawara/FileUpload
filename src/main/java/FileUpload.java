@@ -53,7 +53,7 @@ public class FileUpload extends HttpServlet {
         System.exit(0);
         
         try {
-            Thread.sleep(5000); // 1秒間停止
+            Thread.sleep(5001); // 1秒間停止
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
