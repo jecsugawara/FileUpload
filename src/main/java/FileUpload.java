@@ -1,5 +1,8 @@
-
-
+/**
+ * ファイルアップロードのサンプル
+ * fileUpload.html -> FileUpload.java -> preview.jsp 
+ */
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -28,38 +31,33 @@ public class FileUpload extends HttpServlet {
     	request.setCharacterEncoding("UTF-8");
     	response.setContentType("text/html; charset=UTF-8");
 
-        // 保存先のパスを取得（webapp/uploads）
+        // 保存先のパスを取得
         String applicationPath = request.getServletContext().getRealPath("");
-        String uploadFilePath = applicationPath + UPLOAD_DIR;
+        String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
         System.out.println(">>" + uploadFilePath);
-    	
+        //U:\objworkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Kidda-La\resources\
+        
+        // 保存先のフォルダが無い場合は作成する
+        File uploadDir = new File(uploadFilePath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir(); // フォルダを作成
+        }
     	
         // "uploadFile" は HTML の input name="uploadFile" と一致させる
         Part filePart = request.getPart("uploadFile");
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         
-        // 保存先のディレクトリ（適宜変更してください）
-        String uploadPath = "/resources/";
-        
-        System.out.println("1:"+uploadPath+fileName); // (1) /resources/xxxx.png
-        System.out.println("2:"+getServletContext().getRealPath(uploadPath+fileName)); 
-        // (2)  2:U:\objworkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Kidda-La\resources\スクリーンショット 2025-05-13 10595.png
-        
         // アップロードしたファイルをサーバーに保存
-        filePart.write(getServletContext().getRealPath(uploadPath + fileName));
-        
-        response.getWriter().println("ファイルアップロード完了: " + fileName);
-        
-        System.exit(0);
+        filePart.write(uploadFilePath + fileName);
         
         try {
-            Thread.sleep(5001); // 1秒間停止
+            Thread.sleep(5000); // 5秒間停止
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         
         // プレビュー表示用JSPにファイル名を渡す
-        request.setAttribute("uploadedFileName", "/Kidda-La" + uploadPath + fileName);
+        request.setAttribute("uploadedFileName", "/Kidda-La/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
