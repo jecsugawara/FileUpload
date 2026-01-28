@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"control","l":"KiddaLaController"},{"l":"すべてのクラスおよびインタフェース","u":"allclasses-index.html"}];updateSearchResults();
