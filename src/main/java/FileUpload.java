@@ -33,8 +33,11 @@ public class FileUpload extends HttpServlet {
 
         // 保存先のパスを取得
 //        String applicationPath = request.getServletContext().getRealPath("");
-    	String applicationPath = "Z:\\";
-        String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
+//    	String applicationPath = "Z:\\";
+    	String applicationPath = "/opt/tomcat/apache-tomcat-10.1.52/webapps/";
+//    	String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
+    	String uploadFilePath = applicationPath + UPLOAD_DIR + "/"; 
+    	
         System.out.println(">>" + uploadFilePath);
         
         // 保存先のフォルダが無い場合は作成する
@@ -57,7 +60,8 @@ public class FileUpload extends HttpServlet {
         }
         
         // プレビュー表示用JSPにファイル名を渡す
-        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
+//        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
+        request.setAttribute("uploadedFileName", "/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
