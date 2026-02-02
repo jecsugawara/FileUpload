@@ -32,10 +32,10 @@ public class FileUpload extends HttpServlet {
     	response.setContentType("text/html; charset=UTF-8");
 
         // 保存先のパスを取得
-        String applicationPath = request.getServletContext().getRealPath("");
+//        String applicationPath = request.getServletContext().getRealPath("");
+    	String applicationPath = "Z:\\";
         String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
         System.out.println(">>" + uploadFilePath);
-        //U:\objworkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Kidda-La\resources\
         
         // 保存先のフォルダが無い場合は作成する
         File uploadDir = new File(uploadFilePath);
@@ -57,7 +57,7 @@ public class FileUpload extends HttpServlet {
         }
         
         // プレビュー表示用JSPにファイル名を渡す
-        request.setAttribute("uploadedFileName", "/Kidda-La/" + UPLOAD_DIR + "/" + fileName);
+        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
