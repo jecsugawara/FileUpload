@@ -5,6 +5,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -32,13 +36,41 @@ public class FileUpload extends HttpServlet {
     	response.setContentType("text/html; charset=UTF-8");
 
         // 保存先のパスを取得
-//        String applicationPath = request.getServletContext().getRealPath("");
+        String applicationPath = request.getServletContext().getRealPath("");
 //    	String applicationPath = "Z:\\";
-    	String applicationPath = "/opt/tomcat/apache-tomcat-10.1.52/webapps/";
-//    	String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
-    	String uploadFilePath = applicationPath + UPLOAD_DIR + "/"; 
+    	String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
+
+// 10.64.144.101のTomcatのパス
+//    	String applicationPath = "/opt/tomcat/apache-tomcat-10.1.52/webapps/";
+//    	String uploadFilePath = applicationPath + UPLOAD_DIR + "/"; 
     	
         System.out.println(">>" + uploadFilePath);
+
+        //Loggerクラスのインスタンスを生成する
+        try {
+			Logger log = Logger.getLogger(FileUpload.class.getName());
+			FileHandler fHandler = new FileHandler("C:\\log\\Sample.log", true); //trueは追記モード
+
+			fHandler.setFormatter(new SimpleFormatter());
+			log.addHandler(fHandler);
+
+			//ログをソールに出力する? (これが無くてもコンソールに表示）
+			//ConsoleHandler cHandler = new ConsoleHandler();
+			//log.addHandler(cHandler);
+
+			// ログレベルの設定（必要に応じて）
+			log.setLevel(Level.ALL);
+
+			// 各レベルのログ出力
+			log.severe("重大なエラー");
+			log.warning("警告");
+			log.info("情報メッセージ"); // デフォルトではINFO以上が表示される
+			log.fine("普通の情報(fine)");     // 通常は表示されない
+			log.finer("詳細の情報(finer)");     // 通常は表示されない
+			log.finest("最も詳細の情報(finest)");     // 通常は表示されない
+        }catch (IOException e){
+        	e.printStackTrace();
+        }
         
         // 保存先のフォルダが無い場合は作成する
         File uploadDir = new File(uploadFilePath);
@@ -60,8 +92,8 @@ public class FileUpload extends HttpServlet {
         }
         
         // プレビュー表示用JSPにファイル名を渡す
-//        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
-        request.setAttribute("uploadedFileName", "/" + UPLOAD_DIR + "/" + fileName);
+        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
+//      request.setAttribute("uploadedFileName", "/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
