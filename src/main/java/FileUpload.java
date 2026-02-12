@@ -12,6 +12,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -40,6 +44,32 @@ public class FileUpload extends HttpServlet {
 
         // Eclipse開発環境での保存先のパスを取得
         uploadPath = request.getServletContext().getRealPath("/image/");
+
+        //Loggerクラスのインスタンスを生成する
+        try {
+			Logger log = Logger.getLogger(FileUpload.class.getName());
+			FileHandler fHandler = new FileHandler("C:\\log\\Sample.log", true); //trueは追記モード
+
+			fHandler.setFormatter(new SimpleFormatter());
+			log.addHandler(fHandler);
+
+			//ログをソールに出力する? (これが無くてもコンソールに表示）
+			//ConsoleHandler cHandler = new ConsoleHandler();
+			//log.addHandler(cHandler);
+
+			// ログレベルの設定（必要に応じて）
+			log.setLevel(Level.ALL);
+
+			// 各レベルのログ出力
+			log.severe("重大なエラー");
+			log.warning("警告");
+			log.info("情報メッセージ"); // デフォルトではINFO以上が表示される
+			log.fine("普通の情報(fine)");     // 通常は表示されない
+			log.finer("詳細の情報(finer)");     // 通常は表示されない
+			log.finest("最も詳細の情報(finest)");     // 通常は表示されない
+        }catch (IOException e){
+        	e.printStackTrace();
+        }
         
       /*
         // 本番環境では自身のクラスから@MultipartConfigアノテーションのlocationを取得
