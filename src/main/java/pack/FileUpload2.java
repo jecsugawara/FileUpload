@@ -2,6 +2,8 @@
  * ファイルアップロードのサンプル
  * fileUpload.html -> FileUpload.java -> preview.jsp 
  */
+package pack;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -14,19 +16,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-@WebServlet("/fileupload")
+@WebServlet("/FileUpload2")
 // ファイルサイズ制限などを設定
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
     maxFileSize = 1024 * 1024 * 10,      // 10MB
     maxRequestSize = 1024 * 1024 * 50    // 50MB
 )
-public class FileUpload extends HttpServlet {
+public class FileUpload2 extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-  	
-//    	Context.getAppRoot(request);
- //  	Context2.getAppRoot(request);
+    	
+    	Context2.getAppRoot(request);
+    	Context2.getContextPath(request.getServletContext());
     	
         String UPLOAD_DIR = "resources";
         
@@ -35,18 +37,16 @@ public class FileUpload extends HttpServlet {
     	response.setContentType("text/html; charset=UTF-8");
 
         // 保存先のパスを取得
-    	String contextPath = request.getContextPath();    //-> /FileUpload
+//        String applicationPath = request.getServletContext().getRealPath("");
+    	String applicationPath = "Z:\\";
+//    	String applicationPath = "/opt/tomcat/apache-tomcat-10.1.52/webapps/";
+//    	String uploadFilePath = applicationPath + UPLOAD_DIR + "\\"; 
+    	String uploadFilePath = applicationPath + UPLOAD_DIR + "/"; 
     	
-//    	String path = request.getServletPath();    //-> /fileupload
-//		String path = request.getServletContext(); //-> org.apache.catalina.core.ApplicationContextFacade@3a18669d
-		String realPath = request.getServletContext().getRealPath(""); //-> Z:\fileupload\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\FileUpload\
-//		String path = request.getRequestURI();     //-> /FileUpload/FileUpload
-//		String path = request.getRequestURL().toString();     //-> http://localhost:8080/FileUploa0d/FileUpload
-//		String path = "Z:\\";  //Javaはどこでもアクセス可能だが、Webサーバーはコンテキストパス以下しかアクセスできない
-//		String path = "/opt/tomcat/apache-tomcat-10.1.52/webapps/";
-
+        System.out.println(">>" + uploadFilePath);
+        
         // 保存先のフォルダが無い場合は作成する
-        File uploadDir = new File(contextPath + "/" + UPLOAD_DIR);
+        File uploadDir = new File(uploadFilePath);
         if (!uploadDir.exists()) {
             uploadDir.mkdir(); // フォルダを作成
         }
@@ -54,9 +54,9 @@ public class FileUpload extends HttpServlet {
         // "uploadFile" は HTML の input name="uploadFile" と一致させる
         Part filePart = request.getPart("uploadFile");
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-
+        
         // アップロードしたファイルをサーバーに保存
-        filePart.write(realPath + "\\" + UPLOAD_DIR + "\\" + fileName);
+        filePart.write(uploadFilePath + fileName);
         
         try {
             Thread.sleep(5000); // 5秒間停止
@@ -64,8 +64,9 @@ public class FileUpload extends HttpServlet {
             e.printStackTrace();
         }
         
-        // プレビュー表示用JSPにアップロードファイル名を渡す
-        request.setAttribute("uploadedFileName", contextPath + "/" + UPLOAD_DIR + "/" + fileName);
+        // プレビュー表示用JSPにファイル名を渡す
+//        request.setAttribute("uploadedFileName", "/FileUpload/" + UPLOAD_DIR + "/" + fileName);
+        request.setAttribute("uploadedFileName", "/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
