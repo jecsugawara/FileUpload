@@ -10,13 +10,11 @@ fileUpload.html -> FileUpload.java -> preview.jsp
     <title>プレビュー</title>
 </head>
 <body>
-    <h2>アップロードされたファイル: ${uploadedFileName}</h2>
+    <h2>アップロードされたファイル: ${uploadedFilePath} </h2>
     
-    <!-- プレビュー表示: コンテキストパス/resources/ファイル名 
-                    (例) /Kidda-La/resources/xxxx.png
-    -->
-    <img src="${uploadedFileName}" alt="Preview" style="max-width:500px;">
-    
+    <!-- EL式でリクエストスコープの値を取得する -->
+    <img src="${uploadedFilePath}" alt="Preview" style="max-width:500px;">
+        
     <p><a href="fileUpload.html">別のファイルをアップロード</a></p>
 </body>
 </html>

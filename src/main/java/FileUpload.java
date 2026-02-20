@@ -12,10 +12,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -25,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-@WebServlet("/FileUpload")
+@WebServlet("/fileupload")
 // ファイルサイズ制限などを設定
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -36,15 +32,20 @@ import jakarta.servlet.http.Part;
 public class FileUpload extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+
+//    	Context.getAppRoot(request);
+    	
+        String UPLOAD_DIR = "resources";
+        
 		//文字コード設定
     	request.setCharacterEncoding("UTF-8");
     	response.setContentType("text/html; charset=UTF-8");
 
-        String uploadPath = "";
+        // 保存先のパスを取得
+		String realPath = request.getServletContext().getRealPath(""); //-> Z:\fileupload\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\FileUpload\
+//		String realPath = "Z:\\";  //Javaはどこでもアクセス可能だが、Webサーバーはコンテキストパス以下しかアクセスできない
 
-        // Eclipse開発環境での保存先のパスを取得
-        uploadPath = request.getServletContext().getRealPath("/image/");
-
+/*
         //Loggerクラスのインスタンスを生成する
         try {
 			Logger log = Logger.getLogger(FileUpload.class.getName());
@@ -70,7 +71,7 @@ public class FileUpload extends HttpServlet {
         }catch (IOException e){
         	e.printStackTrace();
         }
-        
+ */       
       /*
         // 本番環境では自身のクラスから@MultipartConfigアノテーションのlocationを取得
         MultipartConfig config = this.getClass().getAnnotation(MultipartConfig.class);
@@ -81,22 +82,17 @@ public class FileUpload extends HttpServlet {
       */
 
         // 保存先のフォルダが無い場合は作成する
-        File uploadDir = new File(uploadPath);
+        File uploadDir = new File(realPath + "/" + UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdir(); // フォルダを作成
         }
-    	
+        
         // HTTPリクエストからファイル名を取得する。"uploadFile"はHTMLのinput name="uploadFile"と一致させる
         Part filePart = request.getPart("uploadFile");
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        
-        // アップロードしたファイルをサーバーに保存(@MultipartConfigのlocationに保存する場合)
-        //filePart.write(fileName);						
 
-        // アップロードしたファイルをサーバーに保存(Eclipse実行環境の場合)
-        String uploadFilePath = uploadPath + fileName;
-        filePart.write(uploadFilePath); 	
-        System.out.println("保存先パス:" + uploadFilePath);
+        // アップロードしたファイルをサーバーに保存
+        filePart.write(realPath + "\\" + UPLOAD_DIR + "\\" + fileName);   //Z:\fileupload\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\FileUpload\resources
         
         try {
             Thread.sleep(5000); // 5秒間停止
@@ -104,9 +100,8 @@ public class FileUpload extends HttpServlet {
             e.printStackTrace();
         }
         
-        // プレビュー表示用JSPにファイル名を渡す
-//      request.setAttribute("uploadedFileName", "/Kidda-La/image/" + fileName);   //これもOK
-        request.setAttribute("uploadedFileName", "image/" + fileName);
+        // アップロードファイル名をプレビュー表示用JSPのリクエストスコープに保存する
+        request.setAttribute("uploadedFilePath", request.getContextPath() + "/" + UPLOAD_DIR + "/" + fileName);
         request.getRequestDispatcher("/preview.jsp").forward(request, response);
     }
 }
