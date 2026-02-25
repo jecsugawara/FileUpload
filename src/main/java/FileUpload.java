@@ -12,6 +12,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -45,7 +49,7 @@ public class FileUpload extends HttpServlet {
 		String realPath = request.getServletContext().getRealPath(""); //-> Z:\fileupload\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\FileUpload\
 //		String realPath = "Z:\\";  //Javaはどこでもアクセス可能だが、Webサーバーはコンテキストパス以下しかアクセスできない
 
-/*
+
         //Loggerクラスのインスタンスを生成する
         try {
 			Logger log = Logger.getLogger(FileUpload.class.getName());
@@ -71,6 +75,7 @@ public class FileUpload extends HttpServlet {
         }catch (IOException e){
         	e.printStackTrace();
         }
+ /*
  */       
       /*
         // 本番環境では自身のクラスから@MultipartConfigアノテーションのlocationを取得
