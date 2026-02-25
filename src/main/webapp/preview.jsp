@@ -11,6 +11,7 @@ fileUpload.html -> FileUpload.java -> preview.jsp
 </head>
 <body>
     <h2>アップロードされたファイル: ${uploadedFilePath} </h2>
+    <h2>アップロード先のリアルパス: ${uploadedRealPath} </h2>
     
     <!-- EL式でリクエストスコープの値を取得する -->
     <img src="${uploadedFilePath}" alt="Preview" style="max-width:500px;">
