@@ -26,8 +26,8 @@ import jakarta.servlet.http.Part;
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
     maxFileSize = 1024 * 1024 * 10,      // 10MB
-    maxRequestSize = 1024 * 1024 * 50,   // 50MB
-    location = "Z:\\fileupload\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\FileUpload"  // 保存場所 (絶対パスをしてすること)
+    maxRequestSize = 1024 * 1024 * 50   // 50MB
+//  location = "Z:\\fileupload\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\FileUpload"  // 保存場所 (絶対パスをしてすること)
 )
 public class FileUpload extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -42,14 +42,14 @@ public class FileUpload extends HttpServlet {
         // 保存先のパスを取得
 		String realPath = request.getServletContext().getRealPath(""); //-> Z:\fileupload\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\FileUpload\
 //		String realPath = "Z:\\";  //Javaはどこでもアクセス可能だが、Webサーバーはコンテキストパス以下しかアクセスできない
-    
+   /* 
         // 本番環境では自身のクラスから@MultipartConfigアノテーションのlocationを取得
         String location = "";
 		MultipartConfig config = this.getClass().getAnnotation(MultipartConfig.class);
         if (config != null) {
             location = config.location();     // @MultipartConfigのlocationの値を取得
         }     
-
+	*/
         // 保存先のフォルダが無い場合は作成する
         File uploadDir = new File(realPath + "\\" + UPLOAD_DIR);
         if (!uploadDir.exists()) {
